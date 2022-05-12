@@ -2,7 +2,9 @@
 #### 항해99 7기 A반 2조 - 미니프로젝트1  
 # YOUFLIX - 너의 영화는?  
 ---
-![main_example](./main_example.png)
+![main_example](./main_example.png)  
+
+[시연영상 바로가기](https://youtu.be/hiapsxAHIX8)
 ---
 ## 1. 프로젝트 소개
 
