@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>YOUFLIX - 너의 영화는?</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <script defer src="{{ url_for('static', filename='main.js') }}"></script>
+
+    <style>
+        .navbar {
+            background: black;
+        }
+
+        .nav-link {
+            cursor: pointer;
+        }
+
+        .masthead {
+            width: 100%;
+            height: 500px;
+
+            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/static/img/masthead.jpg");
+            background-position: center;
+            background-size: cover;
+
+            color: white;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .contents {
+            background: black;
+        }
+
+
+    </style>
+    <script>
+        let movies = {{ movies|tojson }}
+            $(document).ready(function () {
+                list_movie()
+            })
+
+        function list_movie() {
+            for (let i = movies.length-1; i >= 0; i--) {
+                let title = movies[i]["title"]
+                let genre = movies[i]["genre"]
+                let image = movies[i]["image"]
+                let description = movies[i]["description"]
+                let number = movies[i]["number"]
+
+                let temp_html = `<div class="col">
+                                    <div class="card h-100">
+                                    <div class="badge bg-dark text-white position-absolute"
+                                     style="top: 1rem; left: 1rem">${genre}
+                                    </div>
+                                    <img class="card-img-top"
+                                     src="${image}" alt="..."/>
+                                    <div class="card-body">
+                                    <div class="text-center">
+                                        <h5 class="fw-bolder">${title}</h5>
+                                        ${description}
+                                    </div>
+                                </div>
+                                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                    <div class="text-center"><a class="btn btn-outline-dark mt-auto"
+                                                                href="/detail/${number}">리뷰 보기</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`
+                $('#cards-box').append(temp_html)
+            }
+        }
+
+        function upload_movie() {
+            $.ajax({
+                type: 'POST',
+                url: '/api/movie',
+                data: {url_give: $('#movieUrl').val()},
+                async: false,
+                success: function (response) {
+                    alert(response['msg'])
+                    window.location.reload()
+                }
+            })
+        }
+
+    </script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark static-top">
+        <div class="container">
+            <a class="navbar-brand" href="/"><img src="/static/img/logo.png" alt="..."/></a>
+            <div class="button-box">
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav ms-auto py-4 py-lg-0">
+                        <li class="nav-item"><a class="btn-login nav-link" onclick="location.href='/login'">로그인</a></li>
+                        <li class="nav-item"><a class="btn-mypg nav-link" href="/signup">회원가입</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="navbar navbar-expand-lg navbar-light"></div>
+    <!-- Masthead -->
+    <header class="masthead">
+        <div class="container position-relative">
+            <div class="row justify-content-center">
+                <div class="col-xl-6">
+                    <div class="text-center">
+                        <h1 class="mb-5">최고의 추천 영화를 찾아보자!<br/>너의 영화는?</h1>
+                        <form class="">
+                            <div class="row">
+                                <div class="col">
+                                    <input class="form-control form-control-lg" id="movieUrl" type="url"
+                                           placeholder="네이버 영화 URL"/>
+                                </div>
+                                <div class="col-auto">
+                                    <button onclick="upload_movie()" class="btn btn-primary btn-lg" type="submit">
+                                        등록
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Contents -->
+    <div class="contents">
+        <!-- Genre -->
+        <nav class="navbar navbar-expand-lg navbar-dark static-top">
+            <div class="container">
+                <div class="genre-box">
+                    <div class="collapse navbar-collapse">
+                        <ul class="navbar-nav ms-auto py-4 py-lg-0">
+                            <li class="nav-item"><a class="nav-link" href="/">전체</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/kind/다큐멘터리">다큐멘터리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/kind/공포">공포</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/kind/드라마">드라마</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/kind/스릴러">스릴러</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/kind/애니메이션">애니메이션</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/kind/액션">액션</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/kind/코미디">코미디</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="empty-box"></div>
+            </div>
+        </nav>
+        <!-- Movies -->
+        <div class="container px-4 py-4 px-lg-5 mt-5">
+            <div class="mycards">
+                <div class="row row-cols-1 row-cols-md-4 g-4" id="cards-box">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

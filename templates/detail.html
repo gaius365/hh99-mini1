@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>YOUFLIX - 너의 영화는?</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <script defer src="{{ url_for('static', filename='main.js') }}"></script>
+
+    <style>
+        body {
+            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/static/img/masthead.jpg");
+            background-position: initial;
+            background-size: cover;
+        }
+
+        .navbar {
+            background: black;
+        }
+
+        .empty-box {
+            height: 50px;
+        }
+
+        .card {
+            width: 95%;
+            max-width: 700px;
+            box-shadow: 0px 0px 10px 0px lightgray;
+            margin: 20px auto;
+        }
+
+        .wrap {
+            background: darkgray;
+
+            width: 95%;
+            max-width: 700px;
+            padding: 20px;
+            box-shadow: 0px 0px 10px 0px lightgray;
+            margin: 20px auto;
+        }
+
+        li {
+            list-style: none;
+        }
+
+    </style>
+    <script>
+        let movie = '{{ movie|tojson }}'
+        let reviews = {{ reviews|tojson }}
+            $(document).ready(function () {
+                console.log(movie)
+                console.log(reviews)
+                show_review()
+            })
+
+        function show_review() {
+            for (let i = 0; i < reviews.length; i++) {
+                let username = reviews[i]["username"]
+                let review = reviews[i]["review"]
+                let temp_html = `<li>
+                                    <h5>${review}</h5><h7 class="fst-italic">by ${username}</h7><p></p>
+                                </li>`
+                $('#review-list').append(temp_html)
+            }
+        }
+
+        function save_review() {
+            $.ajax({
+                    type: 'POST',
+                    url: '/api/review',
+                    data: {review_give: $('#review-content').val(), title_give: '{{ movie.title }}'},
+                    success: function (response) {
+                        alert(response["msg"])
+                        window.location.reload()
+                    }
+                }
+            )
+        }
+
+    </script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark static-top">
+        <div class="container">
+            <a class="navbar-brand" href="/"><img src="/static/img/logo.png" alt="..."/></a>
+            <div class="button-box">
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav ms-auto py-4 py-lg-0">
+                        <li class="nav-item"><a class="btn-login nav-link" onclick="location.href='/login'">로그인</a></li>
+                        <li class="nav-item"><a class="btn-mypg nav-link" href="/signup">회원가입</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Section -->
+    <section class="empty-box"></section>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="card h-100">
+                    <div class="badge bg-dark text-white position-absolute"
+                         style="top: 1rem; left: 1rem">{{ movie.genre }}
+                    </div>
+                    <img class="card-img-top"
+                         src="{{ movie.image }}" alt="..."/>
+                    <div class="card-body">
+                        <div class="text-center">
+                            <h3 class="fw-bolder" id="title-content">{{ movie.title }}</h3>
+                            {{ movie.description }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="wrap">
+                    <div class="review_title">
+                        <h2 class="fw-bold">리뷰 남기기</h2>
+                        <p></p>
+                    </div>
+                    <div class="mybox">
+                        <div class="myreview">
+                            <div class="row">
+                                <div class="col">
+                                    <input id="review-content" class="form-control" type="text" placeholder="">
+                                </div>
+                                <div class="col-auto">
+                                    <button onclick="save_review()" type="button" class="btn btn-dark">등록</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="wrap">
+                    <div class="box" id="review-list">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
