@@ -59,7 +59,7 @@ Bootstrap을 "적극" 활용한 CSS는 덤입니다.
 ## 6. Troubleshooting  
 - 영화 장르 필터링 시 app.py상의 url과 사용되는 변수값이 중복되어 오류  
   : url 변경하여 해결  
-- Ajax 콜이 성공한 후에 비동기식 처리 방식으로 인해 Ajax 내부 함수 실행 전에 다른 페이지로 넘어가는 오류  
+- Ajax의 비동기식 처리 방식으로 인해 Ajax 내부 함수 실행 전에 다른 페이지로 넘어가는 오류  
   : Ajax에 "async: false" 추가로 동기식 처리방식을 적용하여 해결  
 - Python, HTML, CSS에 익숙하지 않아 발생한 수많은 오류  
   : Google로 해결  
